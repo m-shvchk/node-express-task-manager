@@ -5,17 +5,17 @@ const connectDB = require('./db/connect')
 require('dotenv').config()
 
 // middleware 
-
+app.use(express.static('./public')) // connecting frontend
 app.use(express.json()) 
 // app.use applies express.json to every route; 
 // method inbuilt in express to recognize the incoming req object (post and put) as JSON Object 
 
 // routes
-app.get('/hello', (req, res) =>{
-    res.send('Task Manager App')
-})
+// app.get('/hello', (req, res) =>{
+//     res.send('Task Manager App')
+// })
 
-app.use('/api/v1/tasks', tasks) 
+app.use('/api/v1/tasks', tasks)
 // applies tasks for every route that starts with '/api/v1/tasks'
 
 
