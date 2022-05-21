@@ -27,9 +27,9 @@ const createTask = async (req, res) => {
 const getTask = async (req, res) => {
   try {
     const { id: taskID } = req.params; // taskID is an alias not to get confused with tons of ids
-    const task = await Task.findOne({_id: taskID}) // _id - id from mangoDB
-    if(!task){
-        return res.status(404).json({msg: `No task found with id: ${taskID}`})
+    const task = await Task.findOne({ _id: taskID }); // _id - id from mangoDB
+    if (!task) {
+      return res.status(404).json({ msg: `No task found with id: ${taskID}` });
     }
     res.status(200).json({ task });
     // res.status(200).json({ id: req.params.id });
@@ -39,12 +39,39 @@ const getTask = async (req, res) => {
   }
 };
 
-const updateTask = (req, res) => {
-  res.send("update task");
+const deleteTask = async (req, res) => {
+  try {
+    const { id: taskID } = req.params;
+    const task = await Task.findOneAndDelete({ _id: taskID });
+    if (!task) {
+      return res.status(404).json({ msg: `No task found with id: ${taskID}` });
+    }
+    res.status(200).json({ task });
+    // we send back deleted task for better illustration in Postman. Other types of responsers:
+    // res.status(200).send());
+    // res.status(200).json({ task: null, status: 'success'});
+  } catch (err) {
+    res.status(500).json({ msg: err });
+  }
 };
 
-const deleteTask = (req, res) => {
-  res.send("delete task");
+const updateTask = async (req, res) => {
+  try {
+    const { id: taskID } = req.params;
+    const task = await Task.findOneAndUpdate({ _id: taskID }, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    // third argument - options: 
+    // without 'new:true' we will update the task but res.json({task}) will show the old task
+    // without 'runValidators:true' we can update the task with empty string (validators -> TaskShema)
+    if (!task) {
+      return res.status(404).json({ msg: `No task found with id: ${taskID}` });
+    }
+    res.status(200).json({ task });
+  } catch (err) {
+    res.status(500).json({ msg: err });
+  }
 };
 
 module.exports = {
