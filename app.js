@@ -4,6 +4,7 @@ const tasks = require('./routes/tasks')
 const connectDB = require('./db/connect')
 require('dotenv').config()
 const notFound = require('./middleware/not-found')
+const errorHandlerMiddleware = require('./middleware/error-handler')
 
 // middleware 
 app.use(express.static('./public')) // connecting frontend
@@ -17,7 +18,9 @@ app.use(express.json())
 app.use('/api/v1/tasks', tasks)
 // applies tasks for every route that starts with '/api/v1/tasks'
 
-app.use(notFound) // this SHOULD be placed AFTER other app.use() calls
+// the positioning these two after other middlewares is IMPORTANT:
+app.use(notFound) 
+app.use(errorHandlerMiddleware)
 
 const port = 3000;
 
